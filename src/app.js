@@ -1,6 +1,10 @@
 const express = require('express');
 const logger = require('morgan');
 
+require("dotenv").config();
+
+require('./database');
+
 const router = require("./routes");
 
 var cors = require('cors');
