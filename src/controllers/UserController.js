@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const SendMailControler = require("./SendMailController");
 
 const secret = process.env.JWT_TOKEN;
 
@@ -10,9 +11,13 @@ class UserController {
 
         try {
             await user.save();
+
+            await SendMailControler.whelcome(user.email);
+
             user.password = undefined;
             res.status(200).json(user);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ error: 'Error registering new user please try again.' })
         }
     }
