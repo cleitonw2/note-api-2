@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 
-const SMTP_CONFIG = require("../config/smtp");
+const SMTP_CONFIG = require("../../config/smtp");
 
-class SendMailControler {
+class SendMail {
 
     transporter() {
         return nodemailer.createTransport({
@@ -19,11 +19,11 @@ class SendMailControler {
         });
     }
 
-    async whelcome(email) {
+    async send(email) {
         await this.transporter().sendMail({
             text: "Texto do E-mail",
             subject: "Boas vindas",
-            from: SMTP_CONFIG.user,
+            from: `<suporte> ${SMTP_CONFIG.user}`,
             to: email,
             html: `
                     <html>
@@ -36,4 +36,4 @@ class SendMailControler {
     }
 }
 
-module.exports = new SendMailControler();
+module.exports = new SendMail();

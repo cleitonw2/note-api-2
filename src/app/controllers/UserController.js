@@ -1,18 +1,21 @@
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const SendMailControler = require("./SendMailController");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const SendMail = require("../jobs/SendEmail");
+const Bull = require("bull");
 
 const secret = process.env.JWT_TOKEN;
 
 class UserController {
     async create(req, res) {
         const { name, email, password } = req.body;
+
         const user = new User({ name, email, password });
 
         try {
             await user.save();
 
-            await SendMailControler.whelcome(user.email);
+            let Queue = new Bull("Send mail");
+            Queue.add(SendMail.send(user.email));
 
             user.password = undefined;
             res.status(200).json(user);

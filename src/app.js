@@ -3,7 +3,7 @@ const logger = require('morgan');
 
 require("dotenv").config();
 
-require('./database');
+require('./config/database');
 
 const router = require("./routes");
 
