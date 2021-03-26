@@ -51,9 +51,57 @@ class UserController {
         }
     }
 
-    async update() { }
+    async update(req, res) {
+        const { name, email } = req.body;
 
-    async delete() { }
+        try {
+            var user = await User.findOneAndUpdate(
+                { _id: req.user._id },
+                { $set: { name: name, email: email } },
+                { upsert: true, 'new': true }
+            );
+
+            user.password = undefined;
+
+            res.json(user);
+
+        } catch (error) {
+            res.status(401).json({ error: error });
+        }
+    }
+
+    async updatePassword(req, res) {
+        const { password } = req.body;
+        try {
+            let user = await User.findOne({ _id: req.user._id })
+
+            user.password = password;
+
+            await user.save();
+
+            user.password = undefined;
+
+            res.json(user);
+
+        } catch (error) {
+
+            res.status(401).json({ error: error });
+        }
+    }
+
+    async delete() {
+        try {
+            let user = await User.findOne({ _id: req.user._id });
+
+            await user.delete();
+
+            res.json({ message: 'OK' }).status(201);
+
+        } catch (error) {
+
+            res.status(500).json({ error: error });
+        }
+    }
 
     async resetPassword() { }
 }
