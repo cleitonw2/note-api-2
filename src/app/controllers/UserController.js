@@ -90,7 +90,7 @@ class UserController {
         }
     }
 
-    async delete() {
+    async delete(req, res) {
         try {
             let user = await User.findOne({ _id: req.user._id });
 
