@@ -1,7 +1,8 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const SendMail = require("../jobs/SendEmail");
+const SendMail = require("../jobs/SendMail");
 const Bull = require("bull");
+const Queue = require("../lib/Queue");
 
 const secret = process.env.JWT_TOKEN;
 
@@ -14,13 +15,13 @@ class UserController {
         try {
             await user.save();
 
-            let Queue = new Bull("Send mail");
-            Queue.add(SendMail.send(user.email));
-
             user.password = undefined;
+
+            await Queue.add('RegistrationMail', { user });
+
             res.status(200).json(user);
         } catch (error) {
-            console.log(error)
+
             res.status(500).json({ error: 'Error registering new user please try again.' })
         }
     }

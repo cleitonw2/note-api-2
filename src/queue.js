@@ -1,5 +1,5 @@
 require("dotenv").config();
 
-const Queue = require("./app/queue/conection");
+const Queue = require("./app/lib/Queue");
 
 Queue.process();
