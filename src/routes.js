@@ -13,6 +13,8 @@ router.put("/users/password", withAuth, UserController.updatePassword);
 router.delete("/users", withAuth, UserController.delete);
 
 router.post("/notes", withAuth, NotesController.create);
-
+router.get("/notes/search", withAuth, NotesController.search);
+router.get("/notes/:id", withAuth, NotesController.index);
+router.get("/notes", withAuth, NotesController.store);
 
 module.exports = router;
