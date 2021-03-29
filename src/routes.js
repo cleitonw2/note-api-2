@@ -16,5 +16,7 @@ router.post("/notes", withAuth, NotesController.create);
 router.get("/notes/search", withAuth, NotesController.search);
 router.get("/notes/:id", withAuth, NotesController.index);
 router.get("/notes", withAuth, NotesController.store);
+router.put("/notes/:id", withAuth, NotesController.update);
+router.delete("/notes/:id", withAuth, NotesController.delete);
 
 module.exports = router;

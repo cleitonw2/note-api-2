@@ -39,7 +39,7 @@ class NoteController {
 
         try {
             let note = await Note.findById(id);
-          
+
             if (isOwner(req.user, note))
                 res.json(note);
             else
@@ -66,9 +66,47 @@ class NoteController {
         }
     }
 
-    async update(req, res) { }
+    async update(req, res) {
+        const { title, body } = req.body;
+        const { id } = req.params;
 
-    async delete(req, res) { }
+        try {
+            let note = await Note.findById(id);
+
+            if (isOwner(req.user, note)) {
+                note = await Note.findOneAndUpdate(
+                    { _id: id },
+                    { $set: { title: title, body: body } },
+                    { upsert: true, 'new': true }
+                );
+
+                res.json(note);
+            } else
+                res.status(403).json({ error: 'Permission denied' });
+
+        } catch (error) {
+
+            res.status(500).json({ error: 'Problem to update a note' });
+        }
+    }
+
+    async delete(req, res) {
+        const { id } = req.params;
+
+        try {
+            let note = await Note.findById(id);
+
+            if (isOwner(req.user, note)) {
+                await note.delete();
+                res.json({ message: 'OK' }).status(204);
+            } else
+                res.status(403).jsosn({ error: 'Permission denied' });
+
+        } catch (error) {
+
+            res.status(500).json({ error: 'Problem to delete a note' });
+        }
+    }
 }
 
 module.exports = new NoteController();
